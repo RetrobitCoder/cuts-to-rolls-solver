@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -50,12 +52,17 @@ public class App extends Application
     }
 
     @Override
-    public void start(Stage stage) { // TODO: refactor this to use fxml
-        Label label = new Label("Hello World");
-        Scene scene = new Scene(new StackPane(label), 640, 480);
+    public void start(Stage stage) throws Exception { // TODO: refactor this to use fxml
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("App.fxml"));
+
+        Parent root = (Parent) loader.load();
+
+        Scene scene = new Scene(root);
 
         stage.setScene(scene);
+
         stage.show();
+
     }
     public static void main( String[] args )
     {
