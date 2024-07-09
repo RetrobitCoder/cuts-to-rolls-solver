@@ -52,8 +52,8 @@ public class App extends Application
     }
 
     @Override
-    public void start(Stage stage) throws Exception { // TODO: refactor this to use fxml
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("App.fxml"));
+    public void start(Stage stage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("App.fxml")); // TODO: update fxml to use controller and pre-populate listviews with empty data (want it to be editable tho)
 
         Parent root = (Parent) loader.load();
 
