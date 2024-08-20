@@ -1,20 +1,17 @@
 package io.github.retrobitcoder;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 public class ConversionUtility {
+
+    private ConversionUtility() {
+        // hiding public constructor
+    }
     /**
-     * Convert a double that comprises feet with the decimal part being inches to just inches
-     * @param feet feet.inches
+     * Combine given feet and inches into an inches only value
+     * @param feet
+     * @param inches
      * @return int of only inches
      */
-    public static int feetToInches(double feetWithInches) {
-        BigDecimal measurement = BigDecimal.valueOf(feetWithInches);
-
-        int feet = measurement.intValue();
-        int inches = measurement.subtract(new BigDecimal(feet)).scaleByPowerOfTen(2).round(new MathContext(2)).intValue();
-
+    public static int feetToInches(int feet, int inches) {
         inches += (feet * 12);
 
         return inches;

@@ -4,28 +4,24 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class ConversionUtilityTest extends TestCase{
-    public void testConversion() {
-        double zero = 0.0;
-        
-        int convertedInches = ConversionUtility.feetToInches(zero);
+    public void testConversion() {        
+        int convertedInches = ConversionUtility.feetToInches(0, 0);
 
         Assert.assertEquals(0, convertedInches);
 
-        double one = 0.12;
-
-        convertedInches = ConversionUtility.feetToInches(one);
+        convertedInches = ConversionUtility.feetToInches(0, 12);
 
         Assert.assertEquals(12, convertedInches);
 
-        double two = 1.12;
+        convertedInches = ConversionUtility.feetToInches(1, 0);
 
-        convertedInches = ConversionUtility.feetToInches(two);
+        Assert.assertEquals(12, convertedInches);
+
+        convertedInches = ConversionUtility.feetToInches(1, 12);
 
         Assert.assertEquals(24, convertedInches);
 
-        double mixed = 10.06; // TODO: should 6 inches be .6 or .06?
-
-        convertedInches = ConversionUtility.feetToInches(mixed);
+        convertedInches = ConversionUtility.feetToInches(10, 6);
 
         Assert.assertEquals(126, convertedInches);
     }
