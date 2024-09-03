@@ -3,17 +3,17 @@
 <?import javafx.scene.control.*?>
 
 
-<SplitPane prefWidth="600" prefHeight="400" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane prefWidth="600" prefHeight="400" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.retrobitcoder.CutsToRollsController">
     <items>
         <VBox>
             <children>
-                <Label fx:id="cutsLabel" text="Cuts" />
+                <Label fx:id="cutsLabel" text="Cuts (feet.inches)" />
                 <ListView fx:id="cutsList" />
             </children>
         </VBox>
           <VBox>
             <children>
-                <Label fx:id="rollsLabel" text="Rolls" />
+                <Label fx:id="rollsLabel" text="Rolls (feet.inches)" />
                 <ListView fx:id="rollsList" />
             </children>
           </VBox>

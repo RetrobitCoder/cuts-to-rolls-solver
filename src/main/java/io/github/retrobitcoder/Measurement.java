@@ -3,7 +3,6 @@ package io.github.retrobitcoder;
 public class Measurement {
     private int feet = 0;
     private int inches = 0;
-    private int totalInches = 0;
 
     public Measurement(int feet, int inches) {
         this.feet = feet;
@@ -28,6 +27,11 @@ public class Measurement {
 
     public int getTotalInches() {
         return ConversionUtility.feetToInches(feet, inches);
+    }
+
+    @Override
+    public String toString() {
+        return "" + getFeet() + "." + getInches();
     }
     
 }
