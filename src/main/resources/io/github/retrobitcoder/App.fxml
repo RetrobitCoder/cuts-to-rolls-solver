@@ -7,15 +7,53 @@
     <items>
         <VBox>
             <children>
-                <Label fx:id="cutsLabel" text="Cuts (feet.inches)" />
-                <ListView fx:id="cutsList" />
+                <Label fx:id="cutsLabel" text="Cuts" />
+                <SplitPane>
+                    <items>
+                        <HBox>
+                            <children>
+                                <VBox>
+                                    <children>
+                                        <Label fx:id="cutsFeetLabel" text="Feet" />
+                                        <ListView fx:id="cutsFeetList" />
+                                    </children>
+                                </VBox>
+                                <VBox>
+                                    <children>
+                                        <Label fx:id="cutsInchesLabel" text="Inches" />
+                                        <ListView fx:id="cutsInchesList" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </items>
+                </SplitPane>
             </children>
         </VBox>
-          <VBox>
+        <VBox>
             <children>
-                <Label fx:id="rollsLabel" text="Rolls (feet.inches)" />
-                <ListView fx:id="rollsList" />
+                <Label fx:id="rollsLabel" text="Rolls" />
+                <SplitPane>
+                    <items>
+                        <HBox>
+                            <children>
+                                <VBox>
+                                    <children>
+                                        <Label fx:id="rollsFeetLabel" text="Feet" />
+                                        <ListView fx:id="rollsFeetList" />
+                                    </children>
+                                </VBox>
+                                <VBox>
+                                    <children>
+                                        <Label fx:id="rollsInchesLabel" text="Inches" />
+                                        <ListView fx:id="rollsInchesList" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </items>
+                </SplitPane>
             </children>
-          </VBox>
+        </VBox>
     </items>
 </SplitPane>

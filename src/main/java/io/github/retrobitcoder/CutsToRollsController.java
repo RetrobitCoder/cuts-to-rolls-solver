@@ -1,6 +1,7 @@
 package io.github.retrobitcoder;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -12,26 +13,52 @@ import javafx.scene.control.ListView;
 public class CutsToRollsController implements Initializable{
 
     @FXML
-    private ListView<Measurement> cutsList;
+    private ListView<Integer> cutsFeetList;
 
     @FXML
-    private ListView<Measurement>rollsList;
+    private ListView<Integer> cutsInchesList;
 
-    private ObservableList<Measurement> cuts = FXCollections.observableArrayList();
-    private ObservableList<Measurement> rolls = FXCollections.observableArrayList();
+    @FXML
+    private ListView<Integer>rollsFeetList;
+
+    @FXML
+    private ListView<Integer>rollsInchesList;
+
+    private ObservableList<Integer> cutsFeet = FXCollections.observableArrayList();
+    private ObservableList<Integer> cutsInches = FXCollections.observableArrayList();
+
+    private ObservableList<Integer> rollsFeet = FXCollections.observableArrayList();
+    private ObservableList<Integer> rollsInches = FXCollections.observableArrayList();
+
+
+    private ArrayList<Measurement> cuts = new ArrayList<>();
+    private ArrayList<Measurement> rolls = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle bundle) {
-        cutsList.setItems(cuts);
-        rollsList.setItems(rolls);
+        cutsFeetList.setItems(cutsFeet);
+        cutsInchesList.setItems(cutsInches);
+
+        rollsFeetList.setItems(rollsFeet);
+        rollsInchesList.setItems(rollsInches);
 
         cuts.add(new Measurement(1, 0));
         cuts.add(new Measurement(0, 24));
         cuts.add(new Measurement(2, 12));
 
+        for (Measurement cut : cuts) {
+            cutsFeet.add(cut.getFeet());
+            cutsInches.add(cut.getInches());
+        }
+
         rolls.add(new Measurement(1, 0));
         rolls.add(new Measurement(0, 24));
         rolls.add(new Measurement(2, 12));
+
+        for (Measurement roll : rolls) {
+            rollsFeet.add(roll.getFeet());
+            rollsInches.add(roll.getInches());
+        }
 
     }
 }

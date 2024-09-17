@@ -31,7 +31,7 @@ public class Measurement {
 
     @Override
     public String toString() {
-        return "" + getFeet() + "." + getInches();
+        return "Feet: " + getFeet() + " Inches: " + getInches();
     }
     
 }
