@@ -28,15 +28,6 @@
                         </HBox>
                     </items>
                 </SplitPane>
-                <HBox spacing="5"  alignment="CENTER">
-                    <children>
-                        <Label fx:id="newCutFeetLabel" text="Feet"/>
-                        <TextField fx:id="newCutFeet" text="Enter Feet"/>
-                        <Label fx:id="newCutInchesLabel" text="Inches"/>
-                        <TextField fx:id="newCutInches" text="Enter Inches"/>
-                        <Button fx:id="newCutButton" text="Add"/>
-                    </children>
-                </HBox>
             </children>
         </VBox>
         <VBox>
@@ -62,15 +53,6 @@
                         </HBox>
                     </items>
                 </SplitPane>
-                <HBox spacing="5" alignment="CENTER">
-                    <children>
-                        <Label fx:id="newRollFeetLabel" text="Feet"/>
-                        <TextField fx:id="newRollFeet" text="Enter Feet"/>
-                        <Label fx:id="newRollInchesLabel" text="Inches"/>
-                        <TextField fx:id="newRollInches" text="Enter Inches"/>
-                        <Button fx:id="newRollButton" text="Add"/>
-                    </children>
-                </HBox>
             </children>
         </VBox>
     </items>

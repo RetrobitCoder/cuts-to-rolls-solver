@@ -3,9 +3,9 @@
     - 2 columns
         - [x] 1 for cuts and 1 for rolls
         - ~~want to be able to drag and drop rolls entries for priority~~ Little too much right now
-        - [] Need to be able to add cuts and rolls
-        - want to be able to add about 100 items for cuts and 100 for rolls
-        - need to  handle when giving roll size being 0 or negative
+        - [x] Need to be able to add cuts and rolls
+        - [x] want to be able to add about 100 items for cuts and 100 for rolls
+        - [x] need to  handle when giving roll size being 0 or negative
     - area showing solver answers
 [] Update solver
     - update solver to be able to go through roll list

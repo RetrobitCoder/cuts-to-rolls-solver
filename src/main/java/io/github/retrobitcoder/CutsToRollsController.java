@@ -9,6 +9,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import javafx.scene.control.cell.TextFieldListCell;
+import javafx.util.StringConverter;
 
 public class CutsToRollsController implements Initializable{
 
@@ -31,7 +33,7 @@ public class CutsToRollsController implements Initializable{
     private ObservableList<Integer> rollsInches = FXCollections.observableArrayList();
 
 
-    private ArrayList<Measurement> cuts = new ArrayList<>();
+    private ArrayList<Measurement> cuts = new ArrayList<>(); // TODO: use with solver
     private ArrayList<Measurement> rolls = new ArrayList<>();
 
     @Override
@@ -39,26 +41,48 @@ public class CutsToRollsController implements Initializable{
         cutsFeetList.setItems(cutsFeet);
         cutsInchesList.setItems(cutsInches);
 
+        StringConverter<Integer> converter = new StringConverter<Integer>() {
+
+            @Override
+            public String toString(Integer object) {
+                return object.toString();
+            }
+
+            @Override
+            public Integer fromString(String string) {
+                try {
+                    Integer value = Integer.parseInt(string);
+
+                    value = value < 0 ? 0 : value;
+
+                    return value;
+                } catch (NumberFormatException e) {
+                    return 0;
+                }
+            }
+            
+        };
+
+        cutsFeetList.setEditable(true);
+        cutsFeetList.setCellFactory(TextFieldListCell.forListView(converter));
+
+        cutsInchesList.setEditable(true);
+        cutsInchesList.setCellFactory(TextFieldListCell.forListView(converter));
+
         rollsFeetList.setItems(rollsFeet);
         rollsInchesList.setItems(rollsInches);
 
-        cuts.add(new Measurement(1, 0));
-        cuts.add(new Measurement(0, 24));
-        cuts.add(new Measurement(2, 12));
+        rollsFeetList.setEditable(true);
+        rollsFeetList.setCellFactory(TextFieldListCell.forListView(converter));
 
-        for (Measurement cut : cuts) {
-            cutsFeet.add(cut.getFeet());
-            cutsInches.add(cut.getInches());
+        rollsInchesList.setEditable(true);
+        rollsInchesList.setCellFactory(TextFieldListCell.forListView(converter));
+
+        for (int i = 0; i < 100; i++) {
+            cutsFeet.add(0);
+            cutsInches.add(0);
+            rollsFeet.add(0);
+            rollsInches.add(0);
         }
-
-        rolls.add(new Measurement(1, 0));
-        rolls.add(new Measurement(0, 24));
-        rolls.add(new Measurement(2, 12));
-
-        for (Measurement roll : rolls) {
-            rollsFeet.add(roll.getFeet());
-            rollsInches.add(roll.getInches());
-        }
-
     }
 }
