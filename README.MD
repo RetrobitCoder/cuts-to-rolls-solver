@@ -6,6 +6,8 @@
         - [x] Need to be able to add cuts and rolls
         - [x] want to be able to add about 100 items for cuts and 100 for rolls
         - [x] need to  handle when giving roll size being 0 or negative
+        - [x] synchronized scrolling for cuts and rolls
+        - [ ] need to add a add/delete button or just leave it at 100 default
     - area showing solver answers
 [] Update solver
     - update solver to be able to go through roll list

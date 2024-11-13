@@ -1,18 +1,17 @@
 package io.github.retrobitcoder;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.util.StringConverter;
 
-public class CutsToRollsController implements Initializable{
+public class CutsToRollsController{
 
     @FXML
     private ListView<Integer> cutsFeetList;
@@ -32,12 +31,47 @@ public class CutsToRollsController implements Initializable{
     private ObservableList<Integer> rollsFeet = FXCollections.observableArrayList();
     private ObservableList<Integer> rollsInches = FXCollections.observableArrayList();
 
-
     private ArrayList<Measurement> cuts = new ArrayList<>(); // TODO: use with solver
     private ArrayList<Measurement> rolls = new ArrayList<>();
 
-    @Override
-    public void initialize(URL url, ResourceBundle bundle) {
+    private final int DEFAULT_LIST_SIZE = 100;
+
+    private final String SCROLL_BAR_PROPERTY = ".scroll-bar";
+
+    private void bindCutsScrollbars() {
+        Node cutsInchesNode = cutsInchesList.lookup(SCROLL_BAR_PROPERTY);
+        Node cutsFeetNode = cutsFeetList.lookup(SCROLL_BAR_PROPERTY);
+
+        if (cutsInchesNode instanceof ScrollBar && cutsFeetNode instanceof ScrollBar) {
+            final ScrollBar cutsFeetScrollbar = (ScrollBar) cutsFeetNode;
+            final ScrollBar cutsInchScrollBar = (ScrollBar) cutsInchesNode;
+
+            cutsFeetScrollbar.valueProperty().bindBidirectional(cutsInchScrollBar.valueProperty());
+        }
+    }
+
+    private void bindRollsScrollbars() {
+        Node rollsInchesNode = rollsInchesList.lookup(SCROLL_BAR_PROPERTY);
+        Node rollsFeetNode = rollsFeetList.lookup(SCROLL_BAR_PROPERTY);
+
+        if (rollsInchesNode instanceof ScrollBar && rollsFeetNode instanceof ScrollBar) {
+            final ScrollBar rollsFeetScrollbar = (ScrollBar) rollsFeetNode;
+            final ScrollBar rollsInchScrollBar = (ScrollBar) rollsInchesNode;
+
+            rollsFeetScrollbar.valueProperty().bindBidirectional(rollsInchScrollBar.valueProperty());
+        }
+    }
+
+    private void bindScrollbars() {
+        cutsInchesList.setOnScroll(event -> bindCutsScrollbars());
+        cutsFeetList.setOnScroll(event -> bindCutsScrollbars());
+
+        rollsInchesList.setOnScroll(event -> bindRollsScrollbars());
+        rollsFeetList.setOnScroll(event -> bindRollsScrollbars());
+    }
+
+    @FXML
+    public void initialize() {
         cutsFeetList.setItems(cutsFeet);
         cutsInchesList.setItems(cutsInches);
 
@@ -45,7 +79,7 @@ public class CutsToRollsController implements Initializable{
 
             @Override
             public String toString(Integer object) {
-                return object.toString();
+                return object == 0 ? "" : object.toString();
             }
 
             @Override
@@ -78,11 +112,13 @@ public class CutsToRollsController implements Initializable{
         rollsInchesList.setEditable(true);
         rollsInchesList.setCellFactory(TextFieldListCell.forListView(converter));
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < DEFAULT_LIST_SIZE; i++) {
             cutsFeet.add(0);
             cutsInches.add(0);
             rollsFeet.add(0);
             rollsInches.add(0);
         }
+
+        bindScrollbars();
     }
 }
