@@ -14,111 +14,104 @@ import javafx.util.StringConverter;
 public class CutsToRollsController{
 
     @FXML
-    private ListView<Integer> cutsFeetList;
+    private ListView<Measurement> cutsList;
 
     @FXML
-    private ListView<Integer> cutsInchesList;
+    private ListView<Measurement>rollsList;
 
-    @FXML
-    private ListView<Integer>rollsFeetList;
+    private ObservableList<Measurement> cutsObservableList = FXCollections.observableArrayList();
 
-    @FXML
-    private ListView<Integer>rollsInchesList;
-
-    private ObservableList<Integer> cutsFeet = FXCollections.observableArrayList();
-    private ObservableList<Integer> cutsInches = FXCollections.observableArrayList();
-
-    private ObservableList<Integer> rollsFeet = FXCollections.observableArrayList();
-    private ObservableList<Integer> rollsInches = FXCollections.observableArrayList();
+    private ObservableList<Measurement> rollsObservableList = FXCollections.observableArrayList();
 
     private ArrayList<Measurement> cuts = new ArrayList<>(); // TODO: use with solver
     private ArrayList<Measurement> rolls = new ArrayList<>();
 
     private final int DEFAULT_LIST_SIZE = 100;
 
-    private final String SCROLL_BAR_PROPERTY = ".scroll-bar";
+    private static final String DECIMAL_STRING = "\\.";
 
-    private void bindCutsScrollbars() {
-        Node cutsInchesNode = cutsInchesList.lookup(SCROLL_BAR_PROPERTY);
-        Node cutsFeetNode = cutsFeetList.lookup(SCROLL_BAR_PROPERTY);
+    // private final String SCROLL_BAR_PROPERTY = ".scroll-bar";
 
-        if (cutsInchesNode instanceof ScrollBar && cutsFeetNode instanceof ScrollBar) {
-            final ScrollBar cutsFeetScrollbar = (ScrollBar) cutsFeetNode;
-            final ScrollBar cutsInchScrollBar = (ScrollBar) cutsInchesNode;
+    // private void bindCutsScrollbars() {
+    //     Node cutsInchesNode = cutsInchesList.lookup(SCROLL_BAR_PROPERTY);
+    //     Node cutsFeetNode = cutsFeetList.lookup(SCROLL_BAR_PROPERTY);
 
-            cutsFeetScrollbar.valueProperty().bindBidirectional(cutsInchScrollBar.valueProperty());
-        }
-    }
+    //     if (cutsInchesNode instanceof ScrollBar && cutsFeetNode instanceof ScrollBar) {
+    //         final ScrollBar cutsFeetScrollbar = (ScrollBar) cutsFeetNode;
+    //         final ScrollBar cutsInchScrollBar = (ScrollBar) cutsInchesNode;
 
-    private void bindRollsScrollbars() {
-        Node rollsInchesNode = rollsInchesList.lookup(SCROLL_BAR_PROPERTY);
-        Node rollsFeetNode = rollsFeetList.lookup(SCROLL_BAR_PROPERTY);
+    //         cutsFeetScrollbar.valueProperty().bindBidirectional(cutsInchScrollBar.valueProperty());
+    //     }
+    // }
 
-        if (rollsInchesNode instanceof ScrollBar && rollsFeetNode instanceof ScrollBar) {
-            final ScrollBar rollsFeetScrollbar = (ScrollBar) rollsFeetNode;
-            final ScrollBar rollsInchScrollBar = (ScrollBar) rollsInchesNode;
+    // private void bindRollsScrollbars() {
+    //     Node rollsInchesNode = rollsInchesList.lookup(SCROLL_BAR_PROPERTY);
+    //     Node rollsFeetNode = rollsFeetList.lookup(SCROLL_BAR_PROPERTY);
 
-            rollsFeetScrollbar.valueProperty().bindBidirectional(rollsInchScrollBar.valueProperty());
-        }
-    }
+    //     if (rollsInchesNode instanceof ScrollBar && rollsFeetNode instanceof ScrollBar) {
+    //         final ScrollBar rollsFeetScrollbar = (ScrollBar) rollsFeetNode;
+    //         final ScrollBar rollsInchScrollBar = (ScrollBar) rollsInchesNode;
 
-    private void bindScrollbars() {
-        cutsInchesList.setOnScroll(event -> bindCutsScrollbars());
-        cutsFeetList.setOnScroll(event -> bindCutsScrollbars());
+    //         rollsFeetScrollbar.valueProperty().bindBidirectional(rollsInchScrollBar.valueProperty());
+    //     }
+    // }
 
-        rollsInchesList.setOnScroll(event -> bindRollsScrollbars());
-        rollsFeetList.setOnScroll(event -> bindRollsScrollbars());
-    }
+    // private void bindScrollbars() {
+    //     cutsInchesList.setOnScroll(event -> bindCutsScrollbars());
+    //     cutsFeetList.setOnScroll(event -> bindCutsScrollbars());
+
+    //     // rollsInchesList.setOnScroll(event -> bindRollsScrollbars());
+    //     // rollsFeetList.setOnScroll(event -> bindRollsScrollbars());
+    // }
 
     @FXML
     public void initialize() {
-        cutsFeetList.setItems(cutsFeet);
-        cutsInchesList.setItems(cutsInches);
-
-        StringConverter<Integer> converter = new StringConverter<Integer>() {
-
+        StringConverter<Measurement> converter = new StringConverter<Measurement>() {
             @Override
-            public String toString(Integer object) {
-                return object == 0 ? "" : object.toString();
+            public String toString(Measurement object) {
+                return object == null ? "" : object.toString();
             }
 
             @Override
-            public Integer fromString(String string) {
+            public Measurement fromString(String string) {
                 try {
-                    Integer value = Integer.parseInt(string);
+                    String [] measurement = string.split(DECIMAL_STRING);
 
-                    value = value < 0 ? 0 : value;
+                    if (measurement.length < 2) {
+                       if (measurement.length < 1) {
+                        return null;
+                       }
 
-                    return value;
+                       measurement = new String[]{measurement[0], "0"};
+                    }
+
+                    Integer feet = Integer.parseInt(measurement[0]);
+                    Integer inches = Integer.parseInt(measurement[1]);
+
+                    feet = feet < 0 ? 0 : feet;
+                    inches = inches < 0 ? 0 : inches;
+
+                    return new Measurement(feet, inches);
                 } catch (NumberFormatException e) {
-                    return 0;
+                    return null;
                 }
             }
             
         };
 
-        cutsFeetList.setEditable(true);
-        cutsFeetList.setCellFactory(TextFieldListCell.forListView(converter));
+        cutsList.setItems(cutsObservableList);
 
-        cutsInchesList.setEditable(true);
-        cutsInchesList.setCellFactory(TextFieldListCell.forListView(converter));
+        cutsList.setEditable(true);
+        cutsList.setCellFactory(TextFieldListCell.forListView(converter));
 
-        rollsFeetList.setItems(rollsFeet);
-        rollsInchesList.setItems(rollsInches);
+        rollsList.setItems(rollsObservableList);
 
-        rollsFeetList.setEditable(true);
-        rollsFeetList.setCellFactory(TextFieldListCell.forListView(converter));
-
-        rollsInchesList.setEditable(true);
-        rollsInchesList.setCellFactory(TextFieldListCell.forListView(converter));
+        rollsList.setEditable(true);
+        rollsList.setCellFactory(TextFieldListCell.forListView(converter));
 
         for (int i = 0; i < DEFAULT_LIST_SIZE; i++) {
-            cutsFeet.add(0);
-            cutsInches.add(0);
-            rollsFeet.add(0);
-            rollsInches.add(0);
+            cutsObservableList.add(new Measurement(0, 0));
+            rollsObservableList.add(new Measurement(0, 0));
         }
-
-        bindScrollbars();
     }
 }

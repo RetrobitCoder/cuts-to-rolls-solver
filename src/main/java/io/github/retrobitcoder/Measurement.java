@@ -5,8 +5,10 @@ public class Measurement {
     private int inches = 0;
 
     public Measurement(int feet, int inches) {
-        this.feet = feet;
-        this.inches = inches;
+        int[] values = ConversionUtility.capInches(feet, inches);
+
+        this.feet = values[0];
+        this.inches = values[1];
     }
 
     public int getFeet() {
@@ -22,7 +24,10 @@ public class Measurement {
     }
 
     public void setInches(int inches) {
-        this.inches = inches;
+        int[] values = ConversionUtility.capInches(this.getFeet(), inches);
+
+        this.setFeet(values[0]); 
+        this.inches = values[1];
     }
 
     public int getTotalInches() {
@@ -31,7 +36,7 @@ public class Measurement {
 
     @Override
     public String toString() {
-        return "Feet: " + getFeet() + " Inches: " + getInches();
+        return getFeet() + "." + getInches();
     }
     
 }
