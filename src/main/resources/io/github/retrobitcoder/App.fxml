@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox prefWidth="1000" prefHeight="700" xmlns="http://javafx.com/javafx/9.0.1"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="io.github.retrobitcoder.CutsToRollsController"
+    spacing="5.0">
+    <SplitPane>
+        <items>
+            <VBox spacing="5.0">
+                <children>
+                    <Label fx:id="cutsLabel" text="Cuts" />
+                    <Button fx:id="clearCutsButton" text="Clear Cuts" />
+                    <ListView fx:id="cutsList" />
+                </children>
+            </VBox>
+            <VBox spacing="5.0">
+                <children>
+                    <Label fx:id="rollsLabel" text="Rolls" />
+                    <Button fx:id="clearRollsButton" text="Clear Rolls" />
+                    <ListView fx:id="rollsList" />
+                </children>
+            </VBox>
+        </items>
+    </SplitPane>
+    <VBox spacing="5.0">
+        <children>
+            <Button fx:id="runButton" text="Run" />
+            <TextArea fx:id="resultsTextArea" text="Results" editable="false" />
+        </children>
+    </VBox>
+</VBox>

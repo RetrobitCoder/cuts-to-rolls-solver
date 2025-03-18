@@ -3,11 +3,19 @@ package io.github.retrobitcoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
 /**
  * Hello world!
  *
  */
-public class App 
+public class App extends Application
 {
     private static double[] cuts = {10.8, 16.4, 22.0, 5.0, 4.0, 8.6};
     private static double[] rolls = {31.6, 100.0};
@@ -42,40 +50,55 @@ public class App
 
         return result;
     }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("App.fxml"));
+
+        Parent root = (Parent) loader.load();
+
+        Scene scene = new Scene(root);
+
+        stage.setScene(scene);
+
+        stage.show();
+    }
     public static void main( String[] args )
     {
-        double totalCutSize = 0.0;
+        // double totalCutSize = 0.0;
 
-        for (double cut : cuts) {
-            totalCutSize += cut;
-        }
+        // for (double cut : cuts) {
+        //     totalCutSize += cut;
+        // }
 
-        if (rolls[0] > totalCutSize) {
-            System.out.println("All cuts");
-        }
+        // if (rolls[0] > totalCutSize) {
+        //     System.out.println("All cuts");
+        // }
 
-        knapsack = new double[cuts.length][(int)Math.round(rolls[0])];
+        // knapsack = new double[cuts.length][(int)Math.round(rolls[0])];
 
-        for (int i = 0; i < cuts.length; i++) {
-            Arrays.fill(knapsack[i], 0);
-        }
+        // for (int i = 0; i < cuts.length; i++) {
+        //     Arrays.fill(knapsack[i], 0);
+        // }
 
-        System.out.println(calcKnapsack(cuts.length - 1, rolls[0]));
+        // System.out.println(calcKnapsack(cuts.length - 1, rolls[0]));
 
-        int index = cuts.length - 1;
-        int weight = (int)Math.round(rolls[0]) - 1;
+        // int index = cuts.length - 1;
+        // int weight = (int)Math.round(rolls[0]) - 1;
 
-        while (index > 0) {
-            if (knapsack[index][weight] != knapsack[index - 1][weight]) {
-                selected.add(cuts[index]);
-                weight -= (int) Math.round(cuts[index]);
-            }
+        // while (index > 0) {
+        //     if (knapsack[index][weight] != knapsack[index - 1][weight]) {
+        //         selected.add(cuts[index]);
+        //         weight -= (int) Math.round(cuts[index]);
+        //     }
 
-            index--;
-        }
+        //     index--;
+        // }
 
-        selected.forEach(val -> System.out.println("Val " + val));
+        // selected.forEach(val -> System.out.println("Val " + val));
 
-        // TODO: cleanup, remove selected from cuts list and do again for next roll item
+        // // TODO: cleanup, remove selected from cuts list and do again for next roll item
+
+        launch();
     }
 }
