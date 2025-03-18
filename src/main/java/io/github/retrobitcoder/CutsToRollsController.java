@@ -5,19 +5,31 @@ import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollBar;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.util.StringConverter;
 
 public class CutsToRollsController{
 
     @FXML
+    private Button clearCutsButton;
+
+    @FXML
+    private Button clearRollsButton;
+
+    @FXML
+    private Button runButton;
+
+    @FXML
     private ListView<Measurement> cutsList;
 
     @FXML
     private ListView<Measurement>rollsList;
+
+    @FXML
+    private TextArea resultsTextArea;
 
     private ObservableList<Measurement> cutsObservableList = FXCollections.observableArrayList();
 
@@ -26,7 +38,7 @@ public class CutsToRollsController{
     private ArrayList<Measurement> cuts = new ArrayList<>(); // TODO: use with solver
     private ArrayList<Measurement> rolls = new ArrayList<>();
 
-    private final int DEFAULT_LIST_SIZE = 100;
+    private static final int DEFAULT_LIST_SIZE = 100;
 
     private static final String DECIMAL_STRING = "\\.";
 
@@ -63,6 +75,36 @@ public class CutsToRollsController{
     //     // rollsInchesList.setOnScroll(event -> bindRollsScrollbars());
     //     // rollsFeetList.setOnScroll(event -> bindRollsScrollbars());
     // }
+
+    private void clearCuts() {
+        cutsList.getItems().forEach(x -> {
+            x.setFeet(0);
+            x.setInches(0);
+        });
+
+        cutsList.refresh();
+    }
+
+    private void clearRolls() {
+        rollsList.getItems().forEach(x -> {
+            x.setFeet(0);
+            x.setInches(0);
+        });
+
+        rollsList.refresh();
+    }
+
+    private void run() {
+        resultsTextArea.setText("Running . . . ");
+    }
+
+    private void initButtons() {
+        clearCutsButton.setOnAction(event -> clearCuts());
+
+        clearRollsButton.setOnAction(event -> clearRolls());
+
+        runButton.setOnAction(event -> run());
+    }
 
     @FXML
     public void initialize() {
@@ -108,10 +150,12 @@ public class CutsToRollsController{
 
         rollsList.setEditable(true);
         rollsList.setCellFactory(TextFieldListCell.forListView(converter));
-
+        // TODO: need to fix issue with commit will publish private email
         for (int i = 0; i < DEFAULT_LIST_SIZE; i++) {
             cutsObservableList.add(new Measurement(0, 0));
             rollsObservableList.add(new Measurement(0, 0));
         }
+
+        initButtons();
     }
 }
