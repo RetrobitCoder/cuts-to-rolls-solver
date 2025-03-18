@@ -41,7 +41,7 @@ public class CutsToRollsController{
     private static final int DEFAULT_LIST_SIZE = 100;
 
     private static final String DECIMAL_STRING = "\\.";
-
+    // TODO: make a code snippet for this synching scroll bar scroll
     // private final String SCROLL_BAR_PROPERTY = ".scroll-bar";
 
     // private void bindCutsScrollbars() {
@@ -96,6 +96,18 @@ public class CutsToRollsController{
 
     private void run() {
         resultsTextArea.setText("Running . . . ");
+
+        ArrayList<Measurement> cuts = new ArrayList<>(cutsObservableList);
+        ArrayList<Measurement> rolls = new ArrayList<>(rollsObservableList);
+        
+        cuts.removeIf(x -> x.getInches() == 0);
+        rolls.removeIf(x -> x.getInches() == 0);
+
+        Solver solver = new Solver(cuts, rolls);  // TODO: probably want a single solver class and use the set methods
+
+        solver.solve();
+
+        resultsTextArea.setText(solver.getSolutions());
     }
 
     private void initButtons() {
@@ -150,7 +162,7 @@ public class CutsToRollsController{
 
         rollsList.setEditable(true);
         rollsList.setCellFactory(TextFieldListCell.forListView(converter));
-        // TODO: need to fix issue with commit will publish private email
+       
         for (int i = 0; i < DEFAULT_LIST_SIZE; i++) {
             cutsObservableList.add(new Measurement(0, 0));
             rollsObservableList.add(new Measurement(0, 0));
