@@ -4,6 +4,20 @@ public class Measurement {
     private int feet = 0;
     private int inches = 0;
 
+    public static Measurement max(Measurement m1, Measurement m2) {
+        if (m1.getTotalInches() > m2.getTotalInches()) {
+            return m1;
+        } else if(m1.getTotalInches() < m2.getTotalInches()) {
+            return m2;
+        }
+
+        return m1;
+    }
+
+    public static Measurement add(Measurement m1, Measurement m2) {
+        return new Measurement(m1.getFeet() + m2.getFeet(), m1.getInches() + m2.getInches());
+    }
+
     public Measurement(int feet, int inches) {
         int[] values = ConversionUtility.capInches(feet, inches);
 
