@@ -41,6 +41,8 @@ public class SolverTest extends TestCase {
 
         solver.solve();
 
+        System.out.println(solver.getSolutions());
+
         fail("TODO: check solution");
     }
 }

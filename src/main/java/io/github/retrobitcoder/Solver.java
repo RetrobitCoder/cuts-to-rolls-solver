@@ -3,10 +3,13 @@ package io.github.retrobitcoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Solver {
     private List<Measurement> cuts;
     private List<Measurement> rolls;
+
+    private List<Solution> solutions = new ArrayList<>();
 
     private Measurement[][] knapsack;
 
@@ -31,10 +34,11 @@ public class Solver {
         StringBuilder builder = new StringBuilder();
 
         if (!noCuts && !noRolls) {
-            for (Measurement cut : cuts) {
-                builder.append(cut.getInches());
-                builder.append(",");
-            }
+            solutions.forEach(s -> {
+                builder.append(s.roll() + ": ");
+                builder.append(s.cuts().stream().map(Measurement::toString).collect(Collectors.joining(", ")));
+                builder.append('\n');
+            });
 
             builder.deleteCharAt(builder.length() - 1);
         } else {
@@ -46,17 +50,14 @@ public class Solver {
 
     private Measurement getMeasurement(int index, int capacity) {
         return knapsack[index][capacity];
-    } 
+    }
 
     // TODO: capcity needs to be in inches
     private Measurement calcKnapsack(int index, int capacity) {
         Measurement measurement = getMeasurement(index, capacity);
 
         // base
-        // TODO: probs can combine
-        if (measurement.getTotalInches() != 0) {
-            return measurement;
-        } else if (index == 0 || capacity <= 0) {
+        if (measurement.getTotalInches() != 0 || index == 0 || capacity <= 0) {
             return measurement;
         }
 
@@ -67,7 +68,8 @@ public class Solver {
             result = calcKnapsack(index - 1, capacity);
         } else {
             Measurement tmp1 = calcKnapsack(index - 1, capacity); // calc without including item;
-            Measurement tmp2 = Measurement.add(cuts.get(index), calcKnapsack(index - 1, capacity - cuts.get(index).getTotalInches()));
+            Measurement tmp2 = Measurement.add(cuts.get(index),
+                    calcKnapsack(index - 1, capacity - cuts.get(index).getTotalInches()));
 
             result = Measurement.max(tmp1, tmp2);
         }
@@ -82,6 +84,8 @@ public class Solver {
         noRolls = rolls.isEmpty();
 
         if (!noCuts && !noRolls) {
+            solutions.clear();
+
             // TODO: need to update to handle a list
             knapsack = new Measurement[cuts.size()][rolls.get(0).getTotalInches()];
 
@@ -93,15 +97,6 @@ public class Solver {
             int capacity = rolls.get(0).getTotalInches() - 1;
 
             calcKnapsack(index, capacity);
-
-            for (int i = 0; i < cuts.size(); i++) {
-                for (int j = 0; j < rolls.get(0).getTotalInches(); j++) {
-                    int val = knapsack[i][j].getTotalInches();
-
-                    if (val != 0) System.out.print("(" + i + "," + j + ")" + ":" + val + " ");
-                }
-                System.out.println();
-            }
 
             ArrayList<Measurement> selected = new ArrayList<>();
 
@@ -115,9 +110,9 @@ public class Solver {
                 index--;
             }
 
-            // TODO: create solution obj
-            selected.forEach(val -> System.out.println("Val " + val));
+            Solution solution = new Solution(rolls.get(0), selected);
+
+            solutions.add(solution);
         }
     }
-
 }
