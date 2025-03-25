@@ -9,6 +9,28 @@ import junit.framework.TestCase;
  */
 public class SolverTest extends TestCase {
 
+    public void testNoLists() {
+        String solution = "Cuts and Rolls list can not be all 0s";
+
+        Solver solver = new Solver(null, null);
+
+        solver.solve();
+
+        assertEquals(solution, solver.getSolutions());
+
+        solver.setCuts(new ArrayList<>());
+
+        solver.solve();
+
+        assertEquals(solution, solver.getSolutions());
+
+        solver.setRolls(new ArrayList<>());
+
+        solver.solve();
+
+        assertEquals(solution, solver.getSolutions());
+    }
+    
     public void testSolver() {
         // cuts
         Measurement c1 = new Measurement(10, 8);
@@ -41,8 +63,8 @@ public class SolverTest extends TestCase {
 
         solver.solve();
 
-        System.out.println(solver.getSolutions());
+        String solution = "31.6: 4.0, 5.0, 22.0\n100.0: 8.6, 16.4";
 
-        fail("TODO: check solution");
+        assertEquals(solution, solver.getSolutions());
     }
 }

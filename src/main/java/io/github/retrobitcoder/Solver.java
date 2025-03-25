@@ -16,6 +16,9 @@ public class Solver {
     private boolean noCuts = false;
     private boolean noRolls = false;
 
+    public Solver() {
+    }
+
     public Solver(List<Measurement> cuts, List<Measurement> rolls) {
         this.cuts = cuts;
         this.rolls = rolls;
@@ -29,7 +32,6 @@ public class Solver {
         this.rolls = rolls;
     }
 
-    // TODO: get actual solution
     public String getSolutions() {
         StringBuilder builder = new StringBuilder();
 
@@ -52,7 +54,12 @@ public class Solver {
         return knapsack[index][capacity];
     }
 
-    // TODO: capcity needs to be in inches
+    /**
+     * Solve the knapsack problem
+     * @param index
+     * @param capacity
+     * @return
+     */
     private Measurement calcKnapsack(int index, int capacity) {
         Measurement measurement = getMeasurement(index, capacity);
 
@@ -67,7 +74,7 @@ public class Solver {
         if (cuts.get(index).getTotalInches() > capacity) {
             result = calcKnapsack(index - 1, capacity);
         } else {
-            Measurement tmp1 = calcKnapsack(index - 1, capacity); // calc without including item;
+            Measurement tmp1 = calcKnapsack(index - 1, capacity); // calc without including item
             Measurement tmp2 = Measurement.add(cuts.get(index),
                     calcKnapsack(index - 1, capacity - cuts.get(index).getTotalInches()));
 
@@ -79,40 +86,49 @@ public class Solver {
         return result;
     }
 
+    private void solveKnapsack() {
+        knapsack = new Measurement[cuts.size()][rolls.get(0).getTotalInches()];
+
+        for (int i = 0; i < cuts.size(); i++) {
+            Arrays.fill(knapsack[i], new Measurement(0, 0));
+        }
+
+        int index = cuts.size() - 1;
+        int capacity = rolls.get(0).getTotalInches() - 1;
+
+        calcKnapsack(index, capacity);
+
+        ArrayList<Measurement> selected = new ArrayList<>();
+
+        while (index > 0) {
+            if (knapsack[index][capacity] != knapsack[index - 1][capacity]) {
+                selected.add(cuts.get(index));
+
+                capacity -= cuts.get(index).getTotalInches();
+            }
+
+            index--;
+        }
+
+        Solution solution = new Solution(rolls.get(0), selected);
+
+        selected.forEach(c -> cuts.remove(c));
+
+        rolls.remove(0);
+
+        solutions.add(solution);
+    }
+
     public void solve() {
-        noCuts = cuts.isEmpty();
-        noRolls = rolls.isEmpty();
+        solutions.clear();
+
+        noCuts = cuts == null ? cuts == null : cuts.isEmpty();
+        noRolls = rolls == null ? rolls == null : rolls.isEmpty();
 
         if (!noCuts && !noRolls) {
-            solutions.clear();
-
-            // TODO: need to update to handle a list
-            knapsack = new Measurement[cuts.size()][rolls.get(0).getTotalInches()];
-
-            for (int i = 0; i < cuts.size(); i++) {
-                Arrays.fill(knapsack[i], new Measurement(0, 0));
+            while (!rolls.isEmpty()) {
+                solveKnapsack();
             }
-
-            int index = cuts.size() - 1;
-            int capacity = rolls.get(0).getTotalInches() - 1;
-
-            calcKnapsack(index, capacity);
-
-            ArrayList<Measurement> selected = new ArrayList<>();
-
-            while (index > 0) {
-                if (knapsack[index][capacity] != knapsack[index - 1][capacity]) {
-                    selected.add(cuts.get(index));
-
-                    capacity -= cuts.get(index).getTotalInches();
-                }
-
-                index--;
-            }
-
-            Solution solution = new Solution(rolls.get(0), selected);
-
-            solutions.add(solution);
         }
     }
 }

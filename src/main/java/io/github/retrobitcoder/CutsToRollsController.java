@@ -35,12 +35,12 @@ public class CutsToRollsController{
 
     private ObservableList<Measurement> rollsObservableList = FXCollections.observableArrayList();
 
-    private ArrayList<Measurement> cuts = new ArrayList<>(); // TODO: use with solver
-    private ArrayList<Measurement> rolls = new ArrayList<>();
-
     private static final int DEFAULT_LIST_SIZE = 100;
 
     private static final String DECIMAL_STRING = "\\.";
+
+    private Solver solver = new Solver();
+
     // TODO: make a code snippet for this synching scroll bar scroll
     // private final String SCROLL_BAR_PROPERTY = ".scroll-bar";
 
@@ -100,10 +100,11 @@ public class CutsToRollsController{
         ArrayList<Measurement> cuts = new ArrayList<>(cutsObservableList);
         ArrayList<Measurement> rolls = new ArrayList<>(rollsObservableList);
         
-        cuts.removeIf(x -> x.getInches() == 0);
-        rolls.removeIf(x -> x.getInches() == 0);
+        cuts.removeIf(x -> x.getTotalInches() == 0);
+        rolls.removeIf(x -> x.getTotalInches() == 0);
 
-        Solver solver = new Solver(cuts, rolls);  // TODO: probably want a single solver class and use the set methods
+        solver.setCuts(cuts);
+        solver.setRolls(rolls);
 
         solver.solve();
 
