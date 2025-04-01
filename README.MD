@@ -12,6 +12,6 @@
 [x] Update solver
     - [x] update solver to be able to go through roll list
     - [x]need to make unit tests for it
-[] Update textfield navigations so hitting enter moves to next line
+[x] Update textfield navigations so hitting enter moves to next line
 [] Release binary
-    - generate binaries
+    - generate binaries (https://stackoverflow.com/questions/77591164/package-a-javafx-application-as-a-native-executable-with-resources)(also want to look at maven way too)
