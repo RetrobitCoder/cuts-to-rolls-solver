@@ -90,5 +90,29 @@ public class SolverTest extends TestCase {
         solution = "31.0: 10.0, 20.0\n15.0: ";
 
         assertEquals(solution, solver.getSolutions());
+
+        cutsList.clear();
+
+        c1 = new Measurement(20, 0);
+        c2 = new Measurement(10, 0);
+
+        rollsList.clear();
+
+        r1 = new Measurement(30, 0);
+        r2 = new Measurement(15, 0);
+
+        cutsList.add(c1);
+        cutsList.add(c2);
+
+        rollsList.add(r1);
+        rollsList.add(r2);
+
+        solver = new Solver(cutsList, rollsList);
+
+        solver.solve();
+
+        solution = "30.0: 10.0, 20.0\n15.0: ";
+
+        assertEquals(solution, solver.getSolutions());
     }
 }

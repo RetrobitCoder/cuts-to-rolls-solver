@@ -64,7 +64,7 @@ public class Solver {
         Measurement result = null;
 
         // cut is more than roll capacity
-        if (cuts.get(index).getTotalInches() > capacity) {
+        if (cuts.get(index).getTotalInches() > capacity + 1) {
             result = calcKnapsack(index - 1, capacity);
         } else {
             Measurement tmp1 = calcKnapsack(index - 1, capacity); // calc without including item
@@ -93,7 +93,7 @@ public class Solver {
 
         ArrayList<Measurement> selected = new ArrayList<>();
 
-        while (index >= 0 && capacity > 0) {
+        while (index >= 0 && capacity >= 0) {
             if (knapsack[index][capacity] != Measurement.ZERO) {
                 selected.add(cuts.get(index));
 
