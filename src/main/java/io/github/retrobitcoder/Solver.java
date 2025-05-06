@@ -50,10 +50,6 @@ public class Solver {
         return builder.toString();
     }
 
-    private Measurement getMeasurement(int index, int capacity) {
-        return knapsack[index][capacity];
-    }
-
     /**
      * Solve the knapsack problem
      * @param index
@@ -61,11 +57,8 @@ public class Solver {
      * @return
      */
     private Measurement calcKnapsack(int index, int capacity) {
-        Measurement measurement = getMeasurement(index, capacity);
-
-        // base
-        if (measurement.getTotalInches() != 0 || index == 0 || capacity <= 0) {
-            return measurement;
+        if (index < 0 || capacity < 0) {
+            return Measurement.ZERO;
         }
 
         Measurement result = null;
@@ -90,7 +83,7 @@ public class Solver {
         knapsack = new Measurement[cuts.size()][rolls.get(0).getTotalInches()];
 
         for (int i = 0; i < cuts.size(); i++) {
-            Arrays.fill(knapsack[i], new Measurement(0, 0));
+            Arrays.fill(knapsack[i], Measurement.ZERO);
         }
 
         int index = cuts.size() - 1;
@@ -100,8 +93,8 @@ public class Solver {
 
         ArrayList<Measurement> selected = new ArrayList<>();
 
-        while (index > 0) {
-            if (knapsack[index][capacity] != knapsack[index - 1][capacity]) {
+        while (index >= 0 && capacity > 0) {
+            if (knapsack[index][capacity] != Measurement.ZERO) {
                 selected.add(cuts.get(index));
 
                 capacity -= cuts.get(index).getTotalInches();

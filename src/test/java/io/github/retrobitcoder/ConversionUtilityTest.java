@@ -24,6 +24,10 @@ public class ConversionUtilityTest extends TestCase{
         convertedInches = ConversionUtility.feetToInches(10, 6);
 
         Assert.assertEquals(126, convertedInches);
+
+        convertedInches = ConversionUtility.feetToInches(20, 0);
+
+        Assert.assertEquals(240, convertedInches);
     }
 
     public void testCapInches() {

@@ -4,15 +4,12 @@ import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ListView.EditEvent;
 import javafx.scene.control.cell.TextFieldListCell;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
 
 public class CutsToRollsController {
@@ -44,43 +41,6 @@ public class CutsToRollsController {
     private static final String DECIMAL_STRING = "\\.";
 
     private Solver solver = new Solver();
-
-    // TODO: make a code snippet for this synching scroll bar scroll
-    // private final String SCROLL_BAR_PROPERTY = ".scroll-bar";
-
-    // private void bindCutsScrollbars() {
-    // Node cutsInchesNode = cutsInchesList.lookup(SCROLL_BAR_PROPERTY);
-    // Node cutsFeetNode = cutsFeetList.lookup(SCROLL_BAR_PROPERTY);
-
-    // if (cutsInchesNode instanceof ScrollBar && cutsFeetNode instanceof ScrollBar)
-    // {
-    // final ScrollBar cutsFeetScrollbar = (ScrollBar) cutsFeetNode;
-    // final ScrollBar cutsInchScrollBar = (ScrollBar) cutsInchesNode;
-
-    // cutsFeetScrollbar.valueProperty().bindBidirectional(cutsInchScrollBar.valueProperty());
-    // }
-    // }
-
-    // private void bindRollsScrollbars() {
-    // Node rollsInchesNode = rollsInchesList.lookup(SCROLL_BAR_PROPERTY);
-    // Node rollsFeetNode = rollsFeetList.lookup(SCROLL_BAR_PROPERTY);
-
-    // if (rollsInchesNode instanceof ScrollBar && rollsFeetNode instanceof
-    // ScrollBar) {
-    // final ScrollBar rollsFeetScrollbar = (ScrollBar) rollsFeetNode;
-    // final ScrollBar rollsInchScrollBar = (ScrollBar) rollsInchesNode;
-
-    // rollsFeetScrollbar.valueProperty().bindBidirectional(rollsInchScrollBar.valueProperty());
-    // }
-    // }
-
-    // private void bindScrollbars() {
-    // cutsInchesList.setOnScroll(event -> bindCutsScrollbars());
-    // cutsFeetList.setOnScroll(event -> bindCutsScrollbars());
-
-    // // rollsInchesList.setOnScroll(event -> bindRollsScrollbars());
-    // // rollsFeetList.setOnScroll(event -> bindRollsScrollbars());
-    // }
 
     private void clearCuts() {
         cutsList.getItems().forEach(x -> {
@@ -125,6 +85,42 @@ public class CutsToRollsController {
         runButton.setOnAction(event -> run());
     }
 
+    private void initCutList(StringConverter<Measurement> converter) {
+        cutsList.setOnEditCommit((EditEvent<Measurement> event) -> {
+            cutsList.getItems().set(event.getIndex(), event.getNewValue());
+
+            int nextIndex = event.getIndex() + 1 >= cutsList.getItems().size() ? event.getIndex()
+                    : event.getIndex() + 1;
+
+            cutsList.getSelectionModel().select(nextIndex);
+
+            cutsList.requestFocus();
+        });
+
+        cutsList.setItems(cutsObservableList);
+
+        cutsList.setEditable(true);
+        cutsList.setCellFactory(TextFieldListCell.forListView(converter));
+    }
+
+    private void initRollList(StringConverter<Measurement> converter) {
+        rollsList.setOnEditCommit((EditEvent<Measurement> event) -> {
+            rollsList.getItems().set(event.getIndex(), event.getNewValue());
+
+            int nextIndex = event.getIndex() + 1 >= rollsList.getItems().size() ? event.getIndex()
+                    : event.getIndex() + 1;
+
+            rollsList.getSelectionModel().select(nextIndex);
+
+            rollsList.requestFocus();
+        });
+
+        rollsList.setItems(rollsObservableList);
+
+        rollsList.setEditable(true);
+        rollsList.setCellFactory(TextFieldListCell.forListView(converter));
+    }
+
     @FXML
     public void initialize() {
         StringConverter<Measurement> converter = new StringConverter<Measurement>() {
@@ -159,59 +155,9 @@ public class CutsToRollsController {
             }
 
         };
-        // // TODO: make note that setOnKeyTyped has getCode as UNDEFINED
-        // cutsList.setOnKeyReleased(new EventHandler<KeyEvent>() {
-        // @Override
-        // public void handle(KeyEvent event) {
-        // if (event.getCode() == KeyCode.ENTER) {
-        // int index = cutsList.getSelectionModel().getSelectedIndex();
 
-        // cutsList.getSelectionModel().
-
-        // cutsList.getSelectionModel().select(index + 1);
-
-        // //cutsList.requestFocus();
-        // }
-        // }
-        // });
-
-        cutsList.setOnEditCommit(new EventHandler<ListView.EditEvent<Measurement>>() {
-            @Override
-            public void handle(EditEvent<Measurement> event) {
-                cutsList.getItems().set(event.getIndex(), event.getNewValue());
-
-                int nextIndex = event.getIndex() + 1 >= cutsList.getItems().size() ? event.getIndex()
-                        : event.getIndex() + 1;
-
-                cutsList.getSelectionModel().select(nextIndex);
-
-                cutsList.requestFocus();
-            }
-        });
-
-        cutsList.setItems(cutsObservableList);
-
-        cutsList.setEditable(true);
-        cutsList.setCellFactory(TextFieldListCell.forListView(converter));
-
-        rollsList.setOnEditCommit(new EventHandler<ListView.EditEvent<Measurement>>() {
-            @Override
-            public void handle(EditEvent<Measurement> event) {
-                rollsList.getItems().set(event.getIndex(), event.getNewValue());
-
-                int nextIndex = event.getIndex() + 1 >= rollsList.getItems().size() ? event.getIndex()
-                        : event.getIndex() + 1;
-
-                rollsList.getSelectionModel().select(nextIndex);
-
-                rollsList.requestFocus();
-            }
-        });
-
-        rollsList.setItems(rollsObservableList);
-
-        rollsList.setEditable(true);
-        rollsList.setCellFactory(TextFieldListCell.forListView(converter));
+        initCutList(converter);
+        initRollList(converter);
 
         for (int i = 0; i < DEFAULT_LIST_SIZE; i++) {
             cutsObservableList.add(new Measurement(0, 0));

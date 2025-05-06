@@ -1,6 +1,8 @@
 package io.github.retrobitcoder;
 
 public class Measurement {
+    public static final Measurement ZERO = new Measurement(0, 0);
+
     private int feet = 0;
     private int inches = 0;
 
