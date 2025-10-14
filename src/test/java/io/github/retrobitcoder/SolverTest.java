@@ -63,7 +63,7 @@ public class SolverTest extends TestCase {
 
         solver.solve();
 
-        String solution = "31.6: 8.6, 4.0, 5.0, 22.0\n100.0: 16.4, 10.8";
+        String solution = "31.6: 8.6, 4.0, 5.0, 10.8\n100.0: 22.0, 16.4";
 
         assertEquals(solution, solver.getSolutions());
 
@@ -112,6 +112,30 @@ public class SolverTest extends TestCase {
         solver.solve();
 
         solution = "30.0: 10.0, 20.0\n15.0: ";
+
+        assertEquals(solution, solver.getSolutions());
+
+        cutsList.clear();
+
+        c1 = new Measurement(1, 0);
+        c2 = new Measurement(2, 0);
+
+        rollsList.clear();
+
+        r1 = new Measurement(1, 5);
+        r2 = new Measurement(3, 0);
+
+        cutsList.add(c1);
+        cutsList.add(c2);
+
+        rollsList.add(r1);
+        rollsList.add(r2);
+
+        solver = new Solver(cutsList, rollsList);
+
+        solver.solve();
+
+        solution = "1.5: 1.0\n3.0: 2.0";
 
         assertEquals(solution, solver.getSolutions());
     }

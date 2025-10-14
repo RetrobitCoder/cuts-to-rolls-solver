@@ -1,12 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>io.github.retrobitcoder</groupId>
   <artifactId>cuts-to-rolls-solver</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>cuts-to-rolls-solver</name>
-  <url>http://maven.apache.org</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,80 +18,28 @@
   </properties>
   
   <build>
-    <finalName>Cuts to Rolls Calculator</finalName>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>com.github.akman</groupId>
-          <artifactId>jpackage-maven-plugin</artifactId>
-          <version>0.1.5</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>jpackage</goal>
-              </goals>
-            </execution>
-          </executions>
-          <configuration> <!-- TODO: figure out what I need to fill out -->
-          <!-- https://howtodoinjava.com/devops/jpackage-plugin-example/ 
-          https://akman.github.io/jpackage-maven-plugin/usage.html -->
-            <name>Cuts to Rolls Calculator</name>
-            <appversion>0.0.1</appversion>
-            <!-- <copyright>${copyright}</copyright> -->
-            <vendor>retrobitcoder.github.io</vendor>
-            <mainjar>${app.name}-${app.version}-jar-with-dependencies.jar</mainjar> <!-- TODO: need to update names-->
-            <input>target/</input>
-            <mainclass>io.github.retrobitcoder.App</mainclass>
-            <type>exe</type>
-            <!-- <javaoptions>--> <!--(this dashes need for enable preview)enable-preview</javaoptions> -->
-            <dest>.</dest>
-            <icon>${project.basedir}/src/main/resources/app-icon.ico</icon>
-            <winconsole>false</winconsole>
-            <winmenu>true</winmenu>
-            <winshortcut>false</winshortcut>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
-      <!-- <plugin> TODO: maybe not needed, but will see once we want to package for release
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-              <classpathPrefix>lib/</classpathPrefix>
-              <mainClass>io.github.retrobitcoder.App</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin> -->
-      <!-- TODO may need
+      <!-- Maven Shade Plugin for fat JAR -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.3.0</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>com.example.app.SwingApplication</mainClass>
-            </manifest>
-          </archive>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin> -->
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.2.4</version>
+          <executions>
+              <execution>
+                  <phase>package</phase>
+                  <goals>
+                      <goal>shade</goal>
+                  </goals>
+                  <configuration>
+                      <transformers>
+                          <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                              <mainClass>io.github.retrobitcoder.App</mainClass>
+                          </transformer>
+                      </transformers>
+                  </configuration>
+              </execution>
+          </executions>
+      </plugin>
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
@@ -101,18 +48,18 @@
           <mainClass>io.github.retrobitcoder.App</mainClass>
         </configuration>
       </plugin>
+            <!-- Maven Jar Plugin to specify main class (optional but recommended) -->
       <plugin>
-        <groupId>com.github.akman</groupId>
-        <artifactId>jpackage-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>jpackage-installer</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jpackage</goal>
-            </goals>
-          </execution>
-        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <mainClass>io.github.retrobitcoder.App</mainClass>
+            </manifestEntries>
+          </archive>
+        </configuration>
       </plugin>
     </plugins>
   </build>
