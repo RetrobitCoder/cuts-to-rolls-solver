@@ -8,10 +8,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ListView.EditEvent;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.util.StringConverter;
 
-public class CutsToRollsController{
+public class CutsToRollsController {
 
     @FXML
     private Button clearCutsButton;
@@ -26,7 +27,7 @@ public class CutsToRollsController{
     private ListView<Measurement> cutsList;
 
     @FXML
-    private ListView<Measurement>rollsList;
+    private ListView<Measurement> rollsList;
 
     @FXML
     private TextArea resultsTextArea;
@@ -35,46 +36,11 @@ public class CutsToRollsController{
 
     private ObservableList<Measurement> rollsObservableList = FXCollections.observableArrayList();
 
-    private ArrayList<Measurement> cuts = new ArrayList<>(); // TODO: use with solver
-    private ArrayList<Measurement> rolls = new ArrayList<>();
-
     private static final int DEFAULT_LIST_SIZE = 100;
 
     private static final String DECIMAL_STRING = "\\.";
 
-    // private final String SCROLL_BAR_PROPERTY = ".scroll-bar";
-
-    // private void bindCutsScrollbars() {
-    //     Node cutsInchesNode = cutsInchesList.lookup(SCROLL_BAR_PROPERTY);
-    //     Node cutsFeetNode = cutsFeetList.lookup(SCROLL_BAR_PROPERTY);
-
-    //     if (cutsInchesNode instanceof ScrollBar && cutsFeetNode instanceof ScrollBar) {
-    //         final ScrollBar cutsFeetScrollbar = (ScrollBar) cutsFeetNode;
-    //         final ScrollBar cutsInchScrollBar = (ScrollBar) cutsInchesNode;
-
-    //         cutsFeetScrollbar.valueProperty().bindBidirectional(cutsInchScrollBar.valueProperty());
-    //     }
-    // }
-
-    // private void bindRollsScrollbars() {
-    //     Node rollsInchesNode = rollsInchesList.lookup(SCROLL_BAR_PROPERTY);
-    //     Node rollsFeetNode = rollsFeetList.lookup(SCROLL_BAR_PROPERTY);
-
-    //     if (rollsInchesNode instanceof ScrollBar && rollsFeetNode instanceof ScrollBar) {
-    //         final ScrollBar rollsFeetScrollbar = (ScrollBar) rollsFeetNode;
-    //         final ScrollBar rollsInchScrollBar = (ScrollBar) rollsInchesNode;
-
-    //         rollsFeetScrollbar.valueProperty().bindBidirectional(rollsInchScrollBar.valueProperty());
-    //     }
-    // }
-
-    // private void bindScrollbars() {
-    //     cutsInchesList.setOnScroll(event -> bindCutsScrollbars());
-    //     cutsFeetList.setOnScroll(event -> bindCutsScrollbars());
-
-    //     // rollsInchesList.setOnScroll(event -> bindRollsScrollbars());
-    //     // rollsFeetList.setOnScroll(event -> bindRollsScrollbars());
-    // }
+    private Solver solver = new Solver();
 
     private void clearCuts() {
         cutsList.getItems().forEach(x -> {
@@ -96,6 +62,19 @@ public class CutsToRollsController{
 
     private void run() {
         resultsTextArea.setText("Running . . . ");
+
+        ArrayList<Measurement> cuts = new ArrayList<>(cutsObservableList);
+        ArrayList<Measurement> rolls = new ArrayList<>(rollsObservableList);
+
+        cuts.removeIf(x -> x.getTotalInches() == 0);
+        rolls.removeIf(x -> x.getTotalInches() == 0);
+
+        solver.setCuts(cuts);
+        solver.setRolls(rolls);
+
+        solver.solve();
+
+        resultsTextArea.setText(solver.getSolutions());
     }
 
     private void initButtons() {
@@ -104,6 +83,42 @@ public class CutsToRollsController{
         clearRollsButton.setOnAction(event -> clearRolls());
 
         runButton.setOnAction(event -> run());
+    }
+
+    private void initCutList(StringConverter<Measurement> converter) {
+        cutsList.setOnEditCommit((EditEvent<Measurement> event) -> {
+            cutsList.getItems().set(event.getIndex(), event.getNewValue());
+
+            int nextIndex = event.getIndex() + 1 >= cutsList.getItems().size() ? event.getIndex()
+                    : event.getIndex() + 1;
+
+            cutsList.getSelectionModel().select(nextIndex);
+
+            cutsList.requestFocus();
+        });
+
+        cutsList.setItems(cutsObservableList);
+
+        cutsList.setEditable(true);
+        cutsList.setCellFactory(TextFieldListCell.forListView(converter));
+    }
+
+    private void initRollList(StringConverter<Measurement> converter) {
+        rollsList.setOnEditCommit((EditEvent<Measurement> event) -> {
+            rollsList.getItems().set(event.getIndex(), event.getNewValue());
+
+            int nextIndex = event.getIndex() + 1 >= rollsList.getItems().size() ? event.getIndex()
+                    : event.getIndex() + 1;
+
+            rollsList.getSelectionModel().select(nextIndex);
+
+            rollsList.requestFocus();
+        });
+
+        rollsList.setItems(rollsObservableList);
+
+        rollsList.setEditable(true);
+        rollsList.setCellFactory(TextFieldListCell.forListView(converter));
     }
 
     @FXML
@@ -117,14 +132,14 @@ public class CutsToRollsController{
             @Override
             public Measurement fromString(String string) {
                 try {
-                    String [] measurement = string.split(DECIMAL_STRING);
+                    String[] measurement = string.split(DECIMAL_STRING);
 
                     if (measurement.length < 2) {
-                       if (measurement.length < 1) {
-                        return null;
-                       }
+                        if (measurement.length < 1) {
+                            return null;
+                        }
 
-                       measurement = new String[]{measurement[0], "0"};
+                        measurement = new String[] { measurement[0], "0" };
                     }
 
                     Integer feet = Integer.parseInt(measurement[0]);
@@ -138,19 +153,12 @@ public class CutsToRollsController{
                     return null;
                 }
             }
-            
+
         };
 
-        cutsList.setItems(cutsObservableList);
+        initCutList(converter);
+        initRollList(converter);
 
-        cutsList.setEditable(true);
-        cutsList.setCellFactory(TextFieldListCell.forListView(converter));
-
-        rollsList.setItems(rollsObservableList);
-
-        rollsList.setEditable(true);
-        rollsList.setCellFactory(TextFieldListCell.forListView(converter));
-        // TODO: need to fix issue with commit will publish private email
         for (int i = 0; i < DEFAULT_LIST_SIZE; i++) {
             cutsObservableList.add(new Measurement(0, 0));
             rollsObservableList.add(new Measurement(0, 0));
