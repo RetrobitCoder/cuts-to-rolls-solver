@@ -28,6 +28,7 @@
         <children>
             <Button fx:id="runButton" text="Run" />
             <TextArea fx:id="resultsTextArea" text="Results" editable="false" />
+            <TextArea fx:id="unusedCutsTextArea" text="Unused Cuts" editable="false"/>
         </children>
     </VBox>
 </VBox>
