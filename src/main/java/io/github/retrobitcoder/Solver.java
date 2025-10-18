@@ -49,6 +49,24 @@ public class Solver {
         return builder.toString();
     }
 
+    public String getUnusedCuts() {
+        StringBuilder builder = new StringBuilder();
+
+        if (!cuts.isEmpty()) {
+            builder.append("Unused Cuts: ");
+            
+            cuts.forEach(cut -> {
+                builder.append(cut + ",");
+            });
+
+            builder.deleteCharAt(builder.length() - 1);
+        } else {
+            builder.append("All cuts used");
+        }
+
+        return builder.toString();
+    }
+
     /**
      * Solve the knapsack problem
      * @param index

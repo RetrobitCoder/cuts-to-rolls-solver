@@ -1,6 +1,7 @@
 package io.github.retrobitcoder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +32,9 @@ public class CutsToRollsController {
 
     @FXML
     private TextArea resultsTextArea;
+
+    @FXML
+    private TextArea unusedCutsTextArea;
 
     private ObservableList<Measurement> cutsObservableList = FXCollections.observableArrayList();
 
@@ -75,6 +79,8 @@ public class CutsToRollsController {
         solver.solve();
 
         resultsTextArea.setText(solver.getSolutions());
+
+        unusedCutsTextArea.setText(solver.getUnusedCuts());
     }
 
     private void initButtons() {
