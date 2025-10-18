@@ -1,7 +1,6 @@
 package io.github.retrobitcoder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,57 +56,76 @@ public class Solver {
      * @return
      */
     private Measurement calcKnapsack(int index, int capacity) {
-        if (index < 0 || capacity < 0) {
+        if (index == 0 || capacity == 0) {
             return Measurement.ZERO;
         }
 
-        Measurement result = null;
-
-        // cut is more than roll capacity
-        if (cuts.get(index).getTotalInches() > capacity + 1) {
-            result = Measurement.ZERO;
-
-            calcKnapsack(index - 1, capacity);
-        } else {
-            Measurement tmp1 = calcKnapsack(index - 1, capacity); // calc without including item
-            Measurement tmp2 = Measurement.add(cuts.get(index),
-                    calcKnapsack(index - 1, capacity - cuts.get(index).getTotalInches()));
-
-            result = Measurement.max(tmp1, tmp2);
+        // if already computed, don't compute again
+        if (knapsack[index][capacity].getTotalInches() != Measurement.NEGATIVE_ONE.getTotalInches()) {
+            return knapsack[index][capacity];
         }
 
-        knapsack[index][capacity] = result;
+        // cut is more than roll capacity, so exclude item
+        Measurement includeCut = Measurement.ZERO;
+        if (cuts.get(index - 1).getTotalInches() <= capacity) {
+            includeCut = Measurement.add(cuts.get(index - 1), calcKnapsack(index - 1, capacity - cuts.get(index - 1).getTotalInches()));
+        }
 
-        return result;
+        Measurement exlcudeCut = calcKnapsack(index - 1, capacity);
+
+        knapsack[index][capacity] = Measurement.max(includeCut, exlcudeCut);
+
+        return knapsack[index][capacity];
+    }
+
+    private void printKnapsack(int index, int capacity) {
+        System.out.println("Printing knapsack");
+        for (int i = 0; i <= index; i++){
+            for (int j = 0; j <= capacity; j++) {
+                System.out.print(knapsack[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    private void findCuts(ArrayList<Measurement> selected, int index, int capacity, int maxValue){
+        for (int i = index; i >= 0; i--) {
+            if (maxValue != knapsack[i][capacity].getTotalInches()) {
+                Measurement cut = cuts.get(i);
+
+                selected.add(cut);
+
+                maxValue -= cut.getTotalInches();
+                capacity -= cut.getTotalInches();
+            }
+        }
     }
 
     private void solveKnapsack() {
-        knapsack = new Measurement[cuts.size()][rolls.get(0).getTotalInches()];
+        knapsack = new Measurement[cuts.size() + 1][rolls.get(0).getTotalInches() + 1];
 
-        for (int i = 0; i < cuts.size(); i++) {
-            Arrays.fill(knapsack[i], Measurement.ZERO);
+        for (int i = 0; i <= cuts.size(); i++) {
+            for (int j = 0; j <= rolls.get(0).getTotalInches(); j++) {
+                if (i == 0 || j == 0) {
+                    knapsack[i][j] = Measurement.ZERO;
+                } else {
+                    knapsack[i][j] = Measurement.NEGATIVE_ONE;
+                }
+            }
         }
 
-        int index = cuts.size() - 1;
-        int capacity = rolls.get(0).getTotalInches() - 1;
+        int index = cuts.size();
+        int capacity = rolls.get(0).getTotalInches();
 
-        calcKnapsack(index, capacity);
+        Measurement maxValue = calcKnapsack(index, capacity);
 
         ArrayList<Measurement> selected = new ArrayList<>();
 
-        while (index >= 0 && capacity >= 0) {
-            if (knapsack[index][capacity] != Measurement.ZERO) {
-                selected.add(cuts.get(index));
-                
-                capacity -= cuts.get(index).getTotalInches();
-            }
-
-            index--;
-        }
-
+        findCuts(selected, index, capacity, maxValue.getTotalInches());
+        
         Solution solution = new Solution(rolls.get(0), selected);
 
-        selected.forEach(c -> cuts.remove(c));
+        selected.forEach(cut -> cuts.remove(cut));
 
         rolls.remove(0);
 
