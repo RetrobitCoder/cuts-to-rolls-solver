@@ -140,23 +140,25 @@ public class CutsToRollsController {
                 try {
                     String[] measurement = string.split(DECIMAL_STRING);
 
-                    if (measurement.length < 2) {
-                        if (measurement.length < 1) {
-                            return null;
-                        }
+                    String feetInput = "0";
+                    String inchesInput = "0";
 
-                        measurement = new String[] { measurement[0], "0" };
+                    if (measurement.length == 1) {
+                        feetInput = measurement[0];
+                    } else if (measurement.length == 2) {
+                        feetInput = measurement[0];
+                        inchesInput = measurement[1];
                     }
 
-                    Integer feet = Integer.parseInt(measurement[0]);
-                    Integer inches = Integer.parseInt(measurement[1]);
+                    Integer feet = Integer.parseInt(feetInput);
+                    Integer inches = Integer.parseInt(inchesInput);
 
                     feet = feet < 0 ? 0 : feet;
                     inches = inches < 0 ? 0 : inches;
 
                     return new Measurement(feet, inches);
                 } catch (NumberFormatException e) {
-                    return null;
+                    return new Measurement(0, 0);
                 }
             }
 
